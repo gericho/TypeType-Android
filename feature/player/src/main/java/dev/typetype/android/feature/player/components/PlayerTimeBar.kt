@@ -93,6 +93,7 @@ fun PlayerTimeBar(
             TimelineTrack(
                 positionMs = displayedPosMs,
                 durationMs = durationMs,
+                bufferedPositionMs = progressState.bufferedPositionMs,
                 segments = segments,
                 compact = compact,
                 expanded = expanded,
@@ -149,6 +150,7 @@ fun PlayerTimeBar(
     }
 }
 
+@OptIn(markerClass = [UnstableApi::class])
 @Composable
 internal fun PlayerSeekScrubOverlay(
     player: Player,
@@ -157,11 +159,13 @@ internal fun PlayerSeekScrubOverlay(
     isFullscreen: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val progressState = rememberProgressStateWithTickInterval(player, TICK_INTERVAL_MS)
     BoxWithConstraints(modifier = modifier) {
         val expanded = LocalConfiguration.current.smallestScreenWidthDp >= 600 && maxWidth >= 600.dp
         TimelineTrack(
             positionMs = positionMs,
-            durationMs = player.duration.coerceAtLeast(0L),
+            durationMs = progressState.durationMs.coerceAtLeast(0L),
+            bufferedPositionMs = progressState.bufferedPositionMs,
             segments = segments,
             compact = false,
             emphasized = true,

@@ -43,6 +43,7 @@ internal fun TimelineTrack(
     segments: List<SponsorBlockSegment>,
     compact: Boolean,
     modifier: Modifier = Modifier,
+    bufferedPositionMs: Long = 0L,
     emphasized: Boolean = false,
     expanded: Boolean = false,
     interactive: Boolean = true,
@@ -52,6 +53,7 @@ internal fun TimelineTrack(
     accessibilityLabel: String,
     accessibilityStateDescription: String,
 ) {
+    val bufferedColor = Color.White.copy(alpha = 0.5f)
     val activeColor = MaterialTheme.colorScheme.primary
     val inactiveColor = if (expanded) Color.White.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.38f)
     val timelineModifier = if (interactive) {
@@ -123,6 +125,17 @@ internal fun TimelineTrack(
                 color = inactiveColor,
                 topLeft = Offset(0f, trackTop),
                 size = Size(size.width, trackHeight),
+                cornerRadius = CornerRadius(trackRadius, trackRadius),
+            )
+            val bufferedFraction = if (durationMs > 0L) {
+                bufferedPositionMs.coerceIn(0L, durationMs).toDouble() / durationMs
+            } else {
+                0.0
+            }
+            drawRoundRect(
+                color = bufferedColor,
+                topLeft = Offset(0f, trackTop),
+                size = Size((bufferedFraction * size.width).toFloat(), trackHeight),
                 cornerRadius = CornerRadius(trackRadius, trackRadius),
             )
             drawRoundRect(

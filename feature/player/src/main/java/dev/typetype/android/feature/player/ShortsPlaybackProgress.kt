@@ -32,6 +32,7 @@ fun ShortsPlaybackProgress(
     TimelineTrack(
         positionMs = positionMs,
         durationMs = durationMs,
+        bufferedPositionMs = progress.bufferedPositionMs,
         segments = emptyList(),
         compact = false,
         onScrub = { scrubPositionMs = it },
